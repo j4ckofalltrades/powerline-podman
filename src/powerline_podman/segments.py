@@ -1,0 +1,98 @@
+# -*- coding: utf-8 -*-
+
+from podman import PodmanClient
+from powerline.segments import Segment, with_docstring
+
+
+PODMAN_CONTAINER_STATES = ('created', 'exited', 'paused', 'running', 'unknown')
+
+SEGMENT_INFO = {
+    'created': {
+        'icon': '^',
+        'highlight_group': 'podman_running'
+    },
+    'exited': {
+        'icon': '✖',
+        'highlight_group': 'podman_exited'
+    },
+    'paused': {
+        'icon': '~',
+        'highlight_group': 'podman_paused'
+    },
+    'running': {
+        'icon': '●',
+        'highlight_group': 'podman_running'
+    },
+    'unknown': {
+        'icon': '?',
+        'highlight_group': 'podman_unknown'
+    }
+}
+
+class PodmanSegment(Segment):
+
+    def get_states_count(self):
+        count = []
+        for state in PODMAN_CONTAINER_STATES:
+            if state in self.ignore_states:
+                continue
+            containers = self.cli.containers.list(all=True)
+            if not containers:
+                continue
+            matching_containers = [c for c in containers if c.__dict__['attrs']['State'] == state]
+            count.append({'state': state, 'quantity': len(matching_containers)})
+        return count
+    
+    def build_segments(self, states_count):
+        segments = [
+            {
+                'contents': u'\U0001F9AD',
+                'highlight_groups': ['podman'],
+                'divider_highlight_group': 'podman:divider'
+            }
+        ]
+
+        for count in states_count:
+            if count['quantity'] > 0:
+                segments.append({
+                    'contents': ' %s %d' % (SEGMENT_INFO[count['state']]['icon'], count['quantity']),
+                    'highlight_groups': [SEGMENT_INFO[count['state']]['highlight_group'], 'podman'],
+                    'divider_highlight_group': 'podman:divider'
+                })
+
+        return segments
+
+    def __call__(self, pl, uri="unix:///run/user/1000/podman/podman.sock", ignore_states=[]):
+        pl.debug('Running powerline-podman...')
+
+        self.cli = PodmanClient(base_url=uri)
+        self.ignore_states = ignore_states
+
+        try:
+            states = self.get_states_count()
+        except ConnectionError:
+            pl.error('Cannot connect to Podman server on \'%s\'' % (uri,))
+            return
+        except Exception as e:
+            pl.error(e)
+            return
+
+        return self.build_segments(states)
+
+podman = with_docstring(PodmanSegment(), '''Return the states of Podman containers.
+
+It will show the number of Podman containers running and exited.
+It requires Podman, podman-py to be installed.
+It also requires the Podman REST API service to be running.
+
+:param str uri:
+    base URL including protocol where your Docker daemon lives (e.g. ``tcp://192.168.99.109:2376``).
+    Defaults to ``unix:///run/user/1000/podman/podman.sock``, which is where it lives on most Unix systems.
+
+:param list ignore_states:
+    list of states which will be ignored and not printed out (e.g. ``["exited", "paused"]``).
+
+Divider highlight group used: ``podman:divider``.
+
+Highlight groups used: ``podman_running``, ``podman_paused``, ``podman_exited``, ``podman_created``, ``podman_unknown``, ``podman``.
+''')
