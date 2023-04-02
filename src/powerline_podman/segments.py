@@ -86,7 +86,7 @@ It requires Podman, podman-py to be installed.
 It also requires the Podman REST API service to be running.
 
 :param str uri:
-    base URL including protocol where your Docker daemon lives (e.g. ``tcp://192.168.99.109:2376``).
+    URI path where the libpod service is running.
     Defaults to ``unix:///run/user/1000/podman/podman.sock``, which is where it lives on most Unix systems.
 
 :param list ignore_states:

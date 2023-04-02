@@ -43,7 +43,7 @@ see [Powerline Colorschemes](https://powerline.readthedocs.io/en/master/configur
 Add the following config item to your Powerline segments config file,
 see [Powerline Segment reference](https://powerline.readthedocs.io/en/master/configuration/segments.html#segment-reference) for more info.
 
-The segment tries to connect to the Podman engine at `unix:///run/user/1000/podman.sock`, which is where it lives on most Unix systems. You can change the URL with the `uri` argument.
+The segment tries to connect to the libpod service at `unix:///run/user/1000/podman.sock`, which is where it lives on most Unix systems. You can change the URI with the `uri` argument.
 
 Additionally, you can hide containers with specific states e.g. don't show `exited` containers by adding it to the `ignore_states` argument list.
 The valid states are `created`, `exited`, `paused`, `running`, and `unknown`.
