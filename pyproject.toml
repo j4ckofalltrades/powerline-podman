@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "powerline-podman"
-version = "1.0.1"
+version = "1.0.2"
 description = "A custom Powerline segment for displaying the current state of Podman containers"
 authors = ["Jordan Duabe <me@jduabe.dev>"]
 license = "MIT"
