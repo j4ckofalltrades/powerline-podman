@@ -1,4 +1,4 @@
-# powerline-podman
+![powerline-podman-social-preview](https://res.cloudinary.com/j4ckofalltrades/image/upload/v1697278938/foss/gh-social-icons/powerline-podman_ubesku.png)
 
 [![PyPI](https://img.shields.io/pypi/v/powerline-podman)](https://pypi.org/project/powerline-podman/)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/powerline-podman)
