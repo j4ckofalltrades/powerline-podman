@@ -3,7 +3,6 @@
 from podman import PodmanClient
 from powerline.segments import Segment, with_docstring
 
-
 PODMAN_CONTAINER_STATES = ('created', 'exited', 'paused', 'running', 'unknown')
 
 SEGMENT_INFO = {
@@ -29,21 +28,36 @@ SEGMENT_INFO = {
     }
 }
 
-class PodmanSegment(Segment):
 
-    def get_states_count(self):
-        count = []
-        for state in PODMAN_CONTAINER_STATES:
-            if state in self.ignore_states:
-                continue
-            containers = self.cli.containers.list(all=True)
-            if not containers:
-                continue
-            matching_containers = [c for c in containers if c.__dict__['attrs']['State'] == state]
-            count.append({'state': state, 'quantity': len(matching_containers)})
-        return count
-    
-    def build_segments(self, states_count):
+class PodmanSegment(Segment):
+    """Return the states of Podman containers."""
+
+    def __call__(self, pl, uri="unix:///run/user/1000/podman/podman.sock", ignore_states=None):
+        pl.debug('Running powerline-podman...')
+
+        if ignore_states is None:
+            ignore_states = []
+
+        self.cli = PodmanClient(base_url=uri)
+        self.ignore_states = ignore_states
+
+        states_count = []
+        try:
+            for state in PODMAN_CONTAINER_STATES:
+                if state in self.ignore_states:
+                    continue
+                containers = self.cli.containers.list(all=True)
+                if not containers:
+                    continue
+                matching_containers = [c for c in containers if c.attrs["State"] == state]
+                states_count.append({'state': state, 'quantity': len(matching_containers)})
+        except ConnectionError:
+            pl.error('Cannot connect to Podman server on \'%s\'' % (uri,))
+            return
+        except Exception as e:
+            pl.error(e)
+            return
+
         segments = [
             {
                 'contents': u'\U0001F9AD',
@@ -62,22 +76,6 @@ class PodmanSegment(Segment):
 
         return segments
 
-    def __call__(self, pl, uri="unix:///run/user/1000/podman/podman.sock", ignore_states=[]):
-        pl.debug('Running powerline-podman...')
-
-        self.cli = PodmanClient(base_url=uri)
-        self.ignore_states = ignore_states
-
-        try:
-            states = self.get_states_count()
-        except ConnectionError:
-            pl.error('Cannot connect to Podman server on \'%s\'' % (uri,))
-            return
-        except Exception as e:
-            pl.error(e)
-            return
-
-        return self.build_segments(states)
 
 podman = with_docstring(PodmanSegment(), '''Return the states of Podman containers.
 
@@ -94,5 +92,6 @@ It also requires the Podman REST API service to be running.
 
 Divider highlight group used: ``podman:divider``.
 
-Highlight groups used: ``podman_running``, ``podman_paused``, ``podman_exited``, ``podman_created``, ``podman_unknown``, ``podman``.
+Highlight groups used: ``podman_running``, ``podman_paused``, ``podman_exited``, ``podman_created``, ``podman_unknown``,
+``podman``.
 ''')

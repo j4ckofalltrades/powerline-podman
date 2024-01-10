@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "powerline-podman"
-version = "1.0.2"
+version = "1.0.3"
 description = "A custom Powerline segment for displaying the current state of Podman containers"
 authors = ["Jordan Duabe <me@jduabe.dev>"]
 license = "MIT"
@@ -13,7 +13,7 @@ keywords = ["powerline", "podman"]
 "Bug Tracker" = "https://github.com/j4ckofalltrades/powerline-podman/issues"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.9"
 podman = "^4.6.0"
 powerline-status = "^2.7"
 
