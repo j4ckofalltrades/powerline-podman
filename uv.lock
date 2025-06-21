@@ -106,7 +106,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "podman", specifier = ">=4.6.0" },
+    { name = "podman", specifier = ">=5.5.0" },
     { name = "powerline-status", specifier = ">=2.7" },
 ]
 
