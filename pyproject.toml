@@ -1,22 +1,22 @@
-[tool.poetry]
+[project]
 name = "powerline-podman"
 version = "1.0.3"
 description = "A custom Powerline segment for displaying the current state of Podman containers"
-authors = ["Jordan Duabe <me@jduabe.dev>"]
-license = "MIT"
+authors = [{name = "Jordan Duabe", email = "me@jduabe.dev"}]
+license = {text = "MIT"}
 readme = "README.md"
-homepage = "https://github.com/j4ckofalltrades/powerline-podman"
-repository = "https://github.com/j4ckofalltrades/powerline-podman"
+requires-python = ">=3.10"
 keywords = ["powerline", "podman"]
+dependencies = [
+    "podman>=4.6.0",
+    "powerline-status>=2.7",
+]
 
-[tool.poetry.urls]
+[project.urls]
+Homepage = "https://github.com/j4ckofalltrades/powerline-podman"
+Repository = "https://github.com/j4ckofalltrades/powerline-podman"
 "Bug Tracker" = "https://github.com/j4ckofalltrades/powerline-podman/issues"
 
-[tool.poetry.dependencies]
-python = "^3.9"
-podman = "^4.6.0"
-powerline-status = "^2.7"
-
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

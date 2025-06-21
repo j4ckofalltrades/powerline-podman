@@ -15,9 +15,13 @@ See [Podman docs](https://docs.podman.io/en/latest/_static/api.html) for more de
 
 ## Installation
 
-### Using pip
+### Using `uv`
 
-`$ pip install powerline-podman`
+`uv pip install powerline-podman`
+
+### Using `pip`
+
+`pip install powerline-podman`
 
 ## Configuration
 
