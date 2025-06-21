@@ -1,6 +1,6 @@
 [project]
 name = "powerline-podman"
-version = "1.0.3"
+version = "1.0.4"
 description = "A custom Powerline segment for displaying the current state of Podman containers"
 authors = [{name = "Jordan Duabe", email = "me@jduabe.dev"}]
 license = {text = "MIT"}
